@@ -25,10 +25,10 @@ def prime_number_finder(n) -> tuple:
 
 
 # Prime number finder under test
-def calculate_time(function, arg) -> tuple:
+def _calculate_time(function, arg) -> tuple:
     start_time = time.time()
-    function(arg)
-    return arg, time.time() - start_time
+    output = function(arg)
+    return arg, time.time() - start_time, output
 
 
 if __name__ == "__main__":
@@ -36,9 +36,10 @@ if __name__ == "__main__":
     x_array = []
     y_array = []
     while i <= 60000:
-        x, y = calculate_time(prime_number_finder, i)
+        x, y, output = _calculate_time(prime_number_finder, i)
         x_array.append(x)
         y_array.append(y)
+        # print(output)
         i *= 2
     plt.plot(x_array, y_array)
     plt.show()
