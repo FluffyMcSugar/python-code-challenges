@@ -19,7 +19,8 @@ def prime_number_finder(n) -> tuple:
             prime_list.append(i)
             while help_int <= n:
                 index += 1
-                closed_list += help_int,
+                if help_int not in closed_list:
+                    closed_list += help_int,
                 help_int += i
     return tuple(prime_list)
 
@@ -35,11 +36,11 @@ if __name__ == "__main__":
     i = 2
     x_array = []
     y_array = []
-    while i <= 60000:
+    while i <= 10000:
         x, y, output = _calculate_time(prime_number_finder, i)
         x_array.append(x)
         y_array.append(y)
-        # print(output)
         i *= 2
     plt.plot(x_array, y_array)
     plt.show()
+    print(prime_number_finder(10))
