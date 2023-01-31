@@ -1,3 +1,6 @@
+import random
+
+
 class Node:
     def __init__(self, data, p_ref = None, l_ref = None, r_ref = None, bf = 0, height = 0):
         self.data = data        # data
@@ -6,6 +9,62 @@ class Node:
         self.r_ref = r_ref      # right ref
         self.bf = bf            # bf new node standard 0
         self.height = height
+
+    # display and display_aux copied from: https://stackoverflow.com/questions/34012886/print-binary-tree-level-by-level-in-python
+    def display(self):
+        lines, *_ = self._display_aux()
+        for line in lines:
+            print(line)
+
+    def _display_aux(self):
+        """Returns list of strings, width, height, and horizontal coordinate of the root."""
+        # No child.
+        if self.r_ref is None and self.l_ref is None:
+            line = '%s' % self.data
+            width = len(line)
+            height = 1
+            middle = width // 2
+            return [line], width, height, middle
+
+        # Only left child.
+        if self.r_ref is None:
+            lines, n, p, x = self.l_ref._display_aux()
+            s = '%s' % self.data
+            u = len(s)
+            first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
+            second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
+            shifted_lines = [line + u * ' ' for line in lines]
+            return [first_line,
+                    second_line] + shifted_lines, n + u, p + 2, n + u // 2
+
+        # Only right child.
+        if self.l_ref is None:
+            lines, n, p, x = self.r_ref._display_aux()
+            s = '%s' % self.data
+            u = len(s)
+            first_line = s + x * '_' + (n - x) * ' '
+            second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
+            shifted_lines = [u * ' ' + line for line in lines]
+            return [first_line,
+                    second_line] + shifted_lines, n + u, p + 2, u // 2
+
+        # Two children.
+        left, n, p, x = self.l_ref._display_aux()
+        right, m, q, y = self.r_ref._display_aux()
+        s = '%s' % self.data
+        u = len(s)
+        first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (
+                    m - y) * ' '
+        second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (
+                    m - y - 1) * ' '
+        if p < q:
+            left += [n * ' '] * (q - p)
+        elif q < p:
+            right += [m * ' '] * (p - q)
+        zipped_lines = zip(left, right)
+        lines = [first_line, second_line] + [a + u * ' ' + b for a, b in
+                                             zipped_lines]
+        return lines, n + m + u, max(p, q) + 2, n + u // 2
 
     def __repr__(self):
         return f"{self.data} --> L({self.l_ref}), R({self.r_ref})"
@@ -232,29 +291,31 @@ class AVLTree:
             grandparent.l_ref = node
         else:
             grandparent.r_ref = node
-        # connect parent to left ref of node
+        # connect parent to right ref of node
         node.r_ref = parent
         parent.p_ref = node
 
-    def _rotate_lr(self, parent_node, node):
+    def _rotate_lr(self, parent_node, node) -> None:
         self._rotate_left(node, node.r_ref)
         self._rotate_right(parent_node, parent_node.l_ref)
 
-    def _rotate_rl(self, parent_node, node):
+    def _rotate_rl(self, parent_node, node) -> None:
         self._rotate_right(node, node.l_ref)
         self._rotate_left(parent_node, parent_node.r_ref)
 
-    def __str__(self):
+    def __repr__(self) -> str:
         return "root: " + self.root.__repr__()
+
+    def print_tree(self) -> None:
+        if self.root is not None:
+            self.root.display()
+        else:
+            print("empty tree")
 
 
 if __name__ == "__main__":
     tree = AVLTree()
-    tree.insert_data(1)
-    tree.insert_data(2)
-    tree.insert_data(3)
-    tree.insert_data(4)
-    tree.insert_data(20)
-    tree.insert_data(5)
-    tree.insert_data(6)
+    for i in range(20):
+        tree.insert_data(random.randint(0,100))
     print(tree)
+    tree.print_tree()
