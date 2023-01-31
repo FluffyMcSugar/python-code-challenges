@@ -203,7 +203,6 @@ class AVLTree:
         parent.r_ref = node.l_ref
         if node.l_ref is not None:
             node.l_ref.p_ref = parent
-        # disconnect parent and grandparent
         l_or_r = self._l_or_r_child(grandparent, parent)
         # connect node to grandparent
         node.p_ref = grandparent
@@ -218,26 +217,24 @@ class AVLTree:
         parent.p_ref = node
 
     def _rotate_right(self, parent_node, node):
-        # 1. right subtree of node and parent of both will change
-        parent_parent_node = parent_node.p_ref
-        parent_l_or_r_child = self._l_or_r_child(parent_parent_node, parent_node)
-        node_right_subtree = node.r_ref
-        # 2. swap left subtree
-        parent_node.r_ref = node_right_subtree
-        if node_right_subtree is not None:
-            node_right_subtree.p_ref = parent_node
-        # 3. swap parents
-        parent_node.p_ref = node
-        node.l_ref = parent_node
-        node.p_ref = parent_parent_node
-        if parent_l_or_r_child == -1:
-            parent_parent_node.l_ref = node
-        elif parent_l_or_r_child == 1:
-            parent_parent_node.r_ref = node
-        elif parent_l_or_r_child == 0:
+        grandparent = parent_node.p_ref
+        parent = parent_node
+        # connect right subtree node to left ref parent
+        parent.l_ref = node.r_ref
+        if node.r_ref is not None:
+            node.r_ref.p_ref = parent
+        l_or_r = self._l_or_r_child(grandparent, parent)
+        # connect node to grandparent
+        node.p_ref = grandparent
+        if l_or_r == 0:
             self.root = node
+        elif l_or_r < 0:
+            grandparent.l_ref = node
         else:
-            raise Exception("error _rotate_left")
+            grandparent.r_ref = node
+        # connect parent to left ref of node
+        node.r_ref = parent
+        parent.p_ref = node
 
     def _rotate_lr(self, parent_node, node):
         self._rotate_left(node, node.r_ref)
