@@ -197,26 +197,25 @@ class AVLTree:
             raise Exception("Error occurred at _l_or_r_child, is not a child of parent")
 
     def _rotate_left(self, parent_node, node):
-        # 1. left tree of node and parent of both will change
-        parent_parent_node = parent_node.p_ref
-        parent_l_or_r_child = self._l_or_r_child(parent_parent_node, parent_node)
-        node_left_subtree = node.l_ref
-        # 2. swap left subtree
-        parent_node.r_ref = node_left_subtree
-        if node_left_subtree is not None:
-            node_left_subtree.p_ref = parent_node
-        # 3. swap parents
-        node.l_ref = parent_node
-        parent_node.p_ref = node
-        node.p_ref = parent_parent_node
-        if parent_l_or_r_child == -1:
-            parent_parent_node.l_ref = node
-        elif parent_l_or_r_child == 1:
-            parent_parent_node.r_ref = node
-        elif parent_l_or_r_child == 0:
+        grandparent = parent_node.p_ref
+        parent = parent_node
+        # connect left subtree node to right ref parent
+        parent.r_ref = node.l_ref
+        if node.l_ref is not None:
+            node.l_ref.p_ref = parent
+        # disconnect parent and grandparent
+        l_or_r = self._l_or_r_child(grandparent, parent)
+        # connect node to grandparent
+        node.p_ref = grandparent
+        if l_or_r == 0:
             self.root = node
+        elif l_or_r < 0:
+            grandparent.l_ref = node
         else:
-            raise Exception("error _rotate_left")
+            grandparent.r_ref = node
+        # connect parent to left ref of node
+        node.l_ref = parent
+        parent.p_ref = node
 
     def _rotate_right(self, parent_node, node):
         # 1. right subtree of node and parent of both will change
