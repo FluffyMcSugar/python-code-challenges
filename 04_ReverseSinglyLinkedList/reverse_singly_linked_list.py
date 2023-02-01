@@ -41,11 +41,12 @@ reverse_singly_linked_list.__doc__ = ('This is a static method that:\n'
                                       'what will happen: reverses SSL')
 
 
+# Reverse SLL under test
 if __name__ == "__main__":
     print(help(reverse_singly_linked_list))
     my_sll = sll.SinglyLinkedList()
-    for i in range(10):
-        my_sll.unshift(i)
+    for i in range(ord('a'), ord('z') + 1):
+        my_sll.unshift(chr(i))
     print(my_sll)
     reverse_singly_linked_list(my_sll)
     print(my_sll)
