@@ -67,7 +67,7 @@ class Node:
         return lines, n + m + u, max(p, q) + 2, n + u // 2
 
     def __repr__(self):
-        return f"{self.data} --> L({self.l_ref}), R({self.r_ref})"
+        return f"{self.data},bf = {self.bf} --> L({self.l_ref}), R({self.r_ref})"
 
 
 class AVLTree:
@@ -105,19 +105,15 @@ class AVLTree:
 
     # search
     def search(self, data) -> Node:
-        return self._search_recursive(self.root ,data)
+        return self._search_recursive(self.root,data)
 
     def _search_recursive(self, node, data):
         if node.data == data:
             return node
-        if node.l_ref is not None:
-            result = self._search_recursive(node.l_ref, data)
-            if result is not None:
-                return result
-        if node.r_ref is not None:
-            result = self._search_recursive(node.r_ref, data)
-            if result is not None:
-                return result
+        if data < node.data and node.l_ref is not None:
+            return self._search_recursive(node.l_ref, data)
+        if data > node.data and node.r_ref is not None:
+            return self._search_recursive(node.r_ref, data)
         return None
 
     # delete
@@ -315,7 +311,9 @@ class AVLTree:
 
 if __name__ == "__main__":
     tree = AVLTree()
-    for i in range(20):
+    for i in range(50):
         tree.insert_data(random.randint(0,100))
-    print(tree)
-    tree.print_tree()
+        tree.print_tree()
+        print(tree)
+    tree.insert_data(61)
+    tree.delete_by_data(61)
