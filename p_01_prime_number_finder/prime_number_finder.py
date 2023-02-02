@@ -1,5 +1,5 @@
 """
-Prime number finder will show all prime numbers up to n
+Prime number finder will show all prime numbers up to value
 """
 import time
 
@@ -10,11 +10,8 @@ def prime_number_finder(n) -> tuple:
     index = 0
     closed_list = ()
     prime_list = []
-    for i in range(1, n + 1):
-        if i == 1:
-            closed_list += i,
-            prime_list.append(i)
-        elif i not in closed_list:
+    for i in range(2, n + 1):
+        if i not in closed_list:
             help_int = i
             prime_list.append(i)
             while help_int <= n:
