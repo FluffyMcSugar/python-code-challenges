@@ -27,3 +27,4 @@
   23. FizzBuzz
   24. The Knapsack Problem
   25. Unique Characters in a String
+  26. MinMax
